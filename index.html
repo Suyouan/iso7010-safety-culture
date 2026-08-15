@@ -3,196 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ISO 7010 安全標誌圖庫 (PWA Ready)</title>
+  <title>ISO 7010 PWA 標誌展示 (開源 CDN 版)</title>
   <style>
-    :root {
-      --primary-color: #1f4e79;
-      --bg-color: #f4f6f8;
-      --card-bg: #ffffff;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      background-color: var(--bg-color);
-      color: #333;
-      margin: 0;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    header {
-      text-align: center;
-      margin-bottom: 24px;
-    }
-
-    h1 {
-      color: var(--primary-color);
-      margin-bottom: 8px;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 900px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-    }
-
-    .card {
-      background: var(--card-bg);
-      border-radius: 12px;
-      padding: 16px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-    }
-
-    .img-wrapper {
-      width: 180px;
-      height: 180px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #fafafa;
-      border-radius: 8px;
-      margin-bottom: 12px;
-      overflow: hidden;
-    }
-
-    .img-wrapper img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-    }
-
-    .badge {
-      background-color: var(--primary-color);
-      color: #fff;
-      font-size: 0.8rem;
-      padding: 4px 8px;
-      border-radius: 4px;
-      margin-bottom: 8px;
-      font-weight: bold;
-    }
-
-    .card h3 {
-      margin: 4px 0;
-      font-size: 1.1rem;
-    }
-
-    .card p {
-      color: #666;
-      font-size: 0.9rem;
-      margin: 4px 0 12px 0;
-    }
-
-    .btn {
-      display: inline-block;
-      padding: 6px 12px;
-      font-size: 0.85rem;
-      color: var(--primary-color);
-      border: 1px solid var(--primary-color);
-      border-radius: 6px;
-      text-decoration: none;
-      transition: all 0.2s;
-    }
-
-    .btn:hover {
-      background-color: var(--primary-color);
-      color: #fff;
-    }
+    body { font-family: sans-serif; background: #f4f6f8; margin: 0; padding: 20px; text-align: center; }
+    h1 { color: #1f4e79; }
+    .grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 20px; }
+    .card { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 200px; text-align: center; }
+    .card img { width: 120px; height: 120px; object-fit: contain; }
+    .code { font-weight: bold; background: #1f4e79; color: #fff; padding: 2px 8px; border-radius: 4px; display: inline-block; margin: 8px 0; }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>ISO 7010 安全標誌展示</h1>
-    <p>展示具備跨域防擋（`referrerpolicy`）的即時圖片渲染機制</p>
-  </header>
+  <h1>ISO 7010 安全標誌展示</h1>
+  <p>使用開源免阻擋 CDN 來源，適用於 PWA 與 GitHub Pages</p>
 
-  <div class="container">
-    <div class="grid" id="sign-grid">
-      <!-- 圖片卡片將由 JavaScript 自動產生 -->
-    </div>
-  </div>
+  <div class="grid" id="container"></div>
 
   <script>
-    // ISO 標誌資料庫
-    const isoSigns = [
-      {
-        id: "P001",
-        title: "一般禁止標誌",
-        enTitle: "General prohibition sign",
-        imgUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/ISO_7010_P001.svg/500px-ISO_7010_P001.svg.png",
-        wikiUrl: "https://commons.wikimedia.org/wiki/File:ISO_7010_P001.svg"
-      },
-      {
-        id: "P002",
-        title: "禁止吸煙",
-        enTitle: "No smoking",
-        imgUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/ISO_7010_P002.svg/500px-ISO_7010_P002.svg.png",
-        wikiUrl: "https://commons.wikimedia.org/wiki/File:ISO_7010_P002.svg"
-      },
-      {
-        id: "P010",
-        title: "禁止觸摸",
-        enTitle: "Do not touch",
-        imgUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/ISO_7010_P010.svg/500px-ISO_7010_P010.svg.png",
-        wikiUrl: "https://commons.wikimedia.org/wiki/File:ISO_7010_P010.svg"
-      },
-      {
-        id: "P017",
-        title: "禁止推擠",
-        enTitle: "No pushing",
-        imgUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/ISO_7010_P017.svg/500px-ISO_7010_P017.svg.png",
-        wikiUrl: "https://commons.wikimedia.org/wiki/File:ISO_7010_P017.svg"
-      },
-      {
-        id: "P018",
-        title: "禁止坐在上方",
-        enTitle: "Do not sit",
-        imgUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/ISO_7010_P018.svg/500px-ISO_7010_P018.svg.png",
-        wikiUrl: "https://commons.wikimedia.org/wiki/File:ISO_7010_P018.svg"
-      }
+    // 使用免受 CORS / 防盜鏈限制的 Iconify 開源 API
+    const signs = [
+      { id: "P001", name: "一般禁止標誌", url: "https://api.iconify.design/gis:no-entry.svg?color=%23d32f2f" },
+      { id: "P002", name: "禁止吸煙", url: "https://api.iconify.design/mdi:no-smoking.svg?color=%23d32f2f" },
+      { id: "P010", name: "禁止觸摸", url: "https://api.iconify.design/tabler:hand-stop.svg?color=%23d32f2f" },
+      { id: "P017", name: "禁止推擠", url: "https://api.iconify.design/carbon:no-push.svg?color=%23d32f2f" },
+      { id: "P018", name: "禁止坐在上方", url: "https://api.iconify.design/carbon:no-seat.svg?color=%23d32f2f" }
     ];
 
-    // 動態渲染圖示組件
-    const grid = document.getElementById('sign-grid');
+    const container = document.getElementById('container');
 
-    isoSigns.forEach(sign => {
+    signs.forEach(s => {
       const card = document.createElement('div');
       card.className = 'card';
-      
       card.innerHTML = `
-        <div class="img-wrapper">
-          <img 
-            src="${sign.imgUrl}" 
-            alt="${sign.title}" 
-            referrerpolicy="no-referrer"
-            loading="lazy"
-            onerror="this.onerror=null; this.src='https://via.placeholder.com/180?text=Image+Load+Error';"
-          />
-        </div>
-        <span class="badge">ISO 7010 ${sign.id}</span>
-        <h3>${sign.title}</h3>
-        <p>${sign.enTitle}</p>
-        <a href="${sign.wikiUrl}" target="_blank" rel="noopener noreferrer" class="btn">開啟 Wiki 頁面</a>
+        <img src="${s.url}" alt="${s.name}" />
+        <br/>
+        <span class="code">${s.id}</span>
+        <h4>${s.name}</h4>
       `;
-
-      grid.appendChild(card);
+      container.appendChild(card);
     });
   </script>
 </body>
