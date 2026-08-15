@@ -3,45 +3,198 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ISO 7010 PWA 標誌展示 (開源 CDN 版)</title>
+  <title>ISO 7010 安全標誌圖庫 (GitHub Pages 驗證版)</title>
   <style>
-    body { font-family: sans-serif; background: #f4f6f8; margin: 0; padding: 20px; text-align: center; }
-    h1 { color: #1f4e79; }
-    .grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 20px; }
-    .card { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 200px; text-align: center; }
-    .card img { width: 120px; height: 120px; object-fit: contain; }
-    .code { font-weight: bold; background: #1f4e79; color: #fff; padding: 2px 8px; border-radius: 4px; display: inline-block; margin: 8px 0; }
+    :root {
+      --primary-color: #1f4e79;
+      --bg-color: #f4f6f8;
+      --card-bg: #ffffff;
+      --danger-color: #d32f2f;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: #333;
+      margin: 0;
+      padding: 24px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    h1 {
+      color: var(--primary-color);
+      margin: 0 0 8px 0;
+      font-size: 1.8rem;
+    }
+
+    p.subtitle {
+      color: #666;
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 960px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .img-wrapper {
+      width: 180px;
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #ffffff;
+      border: 1px solid #f0f0f0;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    .img-wrapper img, .img-wrapper svg {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .badge {
+      background-color: var(--primary-color);
+      color: #fff;
+      font-size: 0.85rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    .card h3 {
+      margin: 0 0 4px 0;
+      font-size: 1.2rem;
+      color: #111;
+    }
+
+    .card .en-title {
+      color: #777;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .card .desc {
+      color: #555;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      margin: 0;
+    }
   </style>
 </head>
 <body>
 
-  <h1>ISO 7010 安全標誌展示</h1>
-  <p>使用開源免阻擋 CDN 來源，適用於 PWA 與 GitHub Pages</p>
+  <header>
+    <h1>ISO 7010 安全標誌圖庫</h1>
+    <p class="subtitle">GitHub Pages 測試頁面：免跨域阻擋 · 高清向量展示</p>
+  </header>
 
-  <div class="grid" id="container"></div>
+  <div class="container">
+    <div class="grid" id="sign-grid"></div>
+  </div>
 
   <script>
-    // 使用免受 CORS / 防盜鏈限制的 Iconify 開源 API
-    const signs = [
-      { id: "P001", name: "一般禁止標誌", url: "https://api.iconify.design/gis:no-entry.svg?color=%23d32f2f" },
-      { id: "P002", name: "禁止吸煙", url: "https://api.iconify.design/mdi:no-smoking.svg?color=%23d32f2f" },
-      { id: "P010", name: "禁止觸摸", url: "https://api.iconify.design/tabler:hand-stop.svg?color=%23d32f2f" },
-      { id: "P017", name: "禁止推擠", url: "https://api.iconify.design/carbon:no-push.svg?color=%23d32f2f" },
-      { id: "P018", name: "禁止坐在上方", url: "https://api.iconify.design/carbon:no-seat.svg?color=%23d32f2f" }
+    // ISO 7010 標誌資料庫（包含直接內嵌的向量圖形，保證 100% 成功顯示）
+    const isoSigns = [
+      {
+        id: "P008",
+        title: "禁止觸摸",
+        enTitle: "No touching",
+        desc: "嚴禁手部接觸，避免觸電、燙傷、化學灼傷或污染設備",
+        // 直連 SVG Vector 繪製
+        svgContent: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="42" stroke="#d32f2f" stroke-width="8" fill="none"/>
+          <line x1="20" y1="20" x2="80" y2="80" stroke="#d32f2f" stroke-width="8"/>
+          <path d="M 35 68 L 35 52 Q 35 44 43 44 Q 48 44 48 50 L 48 68 M 48 52 Q 48 46 54 46 Q 59 46 59 52 L 59 68 M 59 54 Q 59 48 65 48 Q 70 48 70 54 L 70 68" stroke="#111" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <line x1="25" y1="72" x2="75" y2="72" stroke="#111" stroke-width="4"/>
+        </svg>`
+      },
+      {
+        id: "P009",
+        title: "禁止推擠 / 推按",
+        enTitle: "Do not push",
+        desc: "嚴禁推擠脆弱結構（如玻璃欄杆、暫存架），防止傾倒",
+        svgContent: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="42" stroke="#d32f2f" stroke-width="8" fill="none"/>
+          <line x1="20" y1="20" x2="80" y2="80" stroke="#d32f2f" stroke-width="8"/>
+          <circle cx="38" cy="32" r="5" fill="#111"/>
+          <path d="M 38 38 L 38 58 M 38 46 L 52 46 M 38 58 L 30 72 M 38 58 L 46 72" stroke="#111" stroke-width="4" stroke-linecap="round"/>
+          <rect x="56" y="38" width="12" height="34" fill="none" stroke="#111" stroke-width="3" stroke-dasharray="4,2"/>
+        </svg>`
+      },
+      {
+        id: "P010",
+        title: "禁止攀爬 / 坐在上方",
+        enTitle: "Do not sit",
+        desc: "嚴禁坐在設備、管道或防護欄桿上，防止摔落或設備損壞",
+        svgContent: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="42" stroke="#d32f2f" stroke-width="8" fill="none"/>
+          <line x1="20" y1="20" x2="80" y2="80" stroke="#d32f2f" stroke-width="8"/>
+          <circle cx="48" cy="28" r="5" fill="#111"/>
+          <path d="M 48 34 L 48 48 L 62 48 M 48 48 L 42 66 M 62 48 L 62 66" stroke="#111" stroke-width="4" stroke-linecap="round" fill="none"/>
+          <line x1="25" y1="52" x2="75" y2="52" stroke="#111" stroke-width="3"/>
+          <line x1="32" y1="52" x2="32" y2="72" stroke="#111" stroke-width="3"/>
+          <line x1="68" y1="52" x2="68" y2="72" stroke="#111" stroke-width="3"/>
+        </svg>`
+      }
     ];
 
-    const container = document.getElementById('container');
+    const grid = document.getElementById('sign-grid');
 
-    signs.forEach(s => {
+    // 動態卡片渲染
+    isoSigns.forEach(sign => {
       const card = document.createElement('div');
       card.className = 'card';
+      
       card.innerHTML = `
-        <img src="${s.url}" alt="${s.name}" />
-        <br/>
-        <span class="code">${s.id}</span>
-        <h4>${s.name}</h4>
+        <div class="img-wrapper">
+          ${sign.svgContent}
+        </div>
+        <span class="badge">ISO 7010 ${sign.id}</span>
+        <h3>${sign.title}</h3>
+        <div class="en-title">${sign.enTitle}</div>
+        <p class="desc">${sign.desc}</p>
       `;
-      container.appendChild(card);
+
+      grid.appendChild(card);
     });
   </script>
 </body>
