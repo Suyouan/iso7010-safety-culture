@@ -1,201 +1,626 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ISO 7010 安全標誌圖庫 (GitHub Pages 驗證版)</title>
-  <style>
-    :root {
-      --primary-color: #1f4e79;
-      --bg-color: #f4f6f8;
-      --card-bg: #ffffff;
-      --danger-color: #d32f2f;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      background-color: var(--bg-color);
-      color: #333;
-      margin: 0;
-      padding: 24px 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    header {
-      text-align: center;
-      margin-bottom: 32px;
-    }
-
-    h1 {
-      color: var(--primary-color);
-      margin: 0 0 8px 0;
-      font-size: 1.8rem;
-    }
-
-    p.subtitle {
-      color: #666;
-      font-size: 0.95rem;
-      margin: 0;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 960px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 24px;
-    }
-
-    .card {
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-    }
-
-    .img-wrapper {
-      width: 180px;
-      height: 180px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #ffffff;
-      border: 1px solid #f0f0f0;
-      border-radius: 12px;
-      margin-bottom: 16px;
-      padding: 10px;
-      box-sizing: border-box;
-    }
-
-    .img-wrapper img, .img-wrapper svg {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-
-    .badge {
-      background-color: var(--primary-color);
-      color: #fff;
-      font-size: 0.85rem;
-      padding: 4px 10px;
-      border-radius: 6px;
-      margin-bottom: 10px;
-      font-weight: bold;
-      letter-spacing: 0.5px;
-    }
-
-    .card h3 {
-      margin: 0 0 4px 0;
-      font-size: 1.2rem;
-      color: #111;
-    }
-
-    .card .en-title {
-      color: #777;
-      font-size: 0.9rem;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-
-    .card .desc {
-      color: #555;
-      font-size: 0.88rem;
-      line-height: 1.5;
-      margin: 0;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>容器與標誌安全管理系統</title>
+    <!-- Tailwind CSS 簡約風樣式 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- QRCode.js 用於動態產生 QR Code -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        @media print {
+            body { background: white; }
+            .no-print { display: none !important; }
+            .print-break { page-break-after: always; }
+        }
+    </style>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
 
-  <header>
-    <h1>ISO 7010 安全標誌圖庫</h1>
-    <p class="subtitle">GitHub Pages 測試頁面：免跨域阻擋 · 高清向量展示</p>
-  </header>
-
-  <div class="container">
-    <div class="grid" id="sign-grid"></div>
-  </div>
-
-  <script>
-    // ISO 7010 標誌資料庫（包含直接內嵌的向量圖形，保證 100% 成功顯示）
-    const isoSigns = [
-      {
-        id: "P008",
-        title: "禁止觸摸",
-        enTitle: "No touching",
-        desc: "嚴禁手部接觸，避免觸電、燙傷、化學灼傷或污染設備",
-        // 直連 SVG Vector 繪製
-        svgContent: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r="42" stroke="#d32f2f" stroke-width="8" fill="none"/>
-          <line x1="20" y1="20" x2="80" y2="80" stroke="#d32f2f" stroke-width="8"/>
-          <path d="M 35 68 L 35 52 Q 35 44 43 44 Q 48 44 48 50 L 48 68 M 48 52 Q 48 46 54 46 Q 59 46 59 52 L 59 68 M 59 54 Q 59 48 65 48 Q 70 48 70 54 L 70 68" stroke="#111" stroke-width="4" fill="none" stroke-linecap="round"/>
-          <line x1="25" y1="72" x2="75" y2="72" stroke="#111" stroke-width="4"/>
-        </svg>`
-      },
-      {
-        id: "P009",
-        title: "禁止推擠 / 推按",
-        enTitle: "Do not push",
-        desc: "嚴禁推擠脆弱結構（如玻璃欄杆、暫存架），防止傾倒",
-        svgContent: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r="42" stroke="#d32f2f" stroke-width="8" fill="none"/>
-          <line x1="20" y1="20" x2="80" y2="80" stroke="#d32f2f" stroke-width="8"/>
-          <circle cx="38" cy="32" r="5" fill="#111"/>
-          <path d="M 38 38 L 38 58 M 38 46 L 52 46 M 38 58 L 30 72 M 38 58 L 46 72" stroke="#111" stroke-width="4" stroke-linecap="round"/>
-          <rect x="56" y="38" width="12" height="34" fill="none" stroke="#111" stroke-width="3" stroke-dasharray="4,2"/>
-        </svg>`
-      },
-      {
-        id: "P010",
-        title: "禁止攀爬 / 坐在上方",
-        enTitle: "Do not sit",
-        desc: "嚴禁坐在設備、管道或防護欄桿上，防止摔落或設備損壞",
-        svgContent: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r="42" stroke="#d32f2f" stroke-width="8" fill="none"/>
-          <line x1="20" y1="20" x2="80" y2="80" stroke="#d32f2f" stroke-width="8"/>
-          <circle cx="48" cy="28" r="5" fill="#111"/>
-          <path d="M 48 34 L 48 48 L 62 48 M 48 48 L 42 66 M 62 48 L 62 66" stroke="#111" stroke-width="4" stroke-linecap="round" fill="none"/>
-          <line x1="25" y1="52" x2="75" y2="52" stroke="#111" stroke-width="3"/>
-          <line x1="32" y1="52" x2="32" y2="72" stroke="#111" stroke-width="3"/>
-          <line x1="68" y1="52" x2="68" y2="72" stroke="#111" stroke-width="3"/>
-        </svg>`
-      }
-    ];
-
-    const grid = document.getElementById('sign-grid');
-
-    // 動態卡片渲染
-    isoSigns.forEach(sign => {
-      const card = document.createElement('div');
-      card.className = 'card';
-      
-      card.innerHTML = `
-        <div class="img-wrapper">
-          ${sign.svgContent}
+    <!-- 頂部導航列 -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <button id="back-btn" onclick="goBack()" class="hidden text-gray-500 hover:text-gray-800 text-sm font-medium flex items-center">
+                    ← 返回上一步
+                </button>
+                <h1 id="main-title" class="text-xl font-semibold tracking-tight text-gray-900 cursor-pointer" onclick="navigateHome()">
+                    安全標誌管理系統
+                </h1>
+                <!-- 待審批清單總數標籤 -->
+                <span id="pending-badge" class="hidden bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full"></span>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                <button onclick="navigateHome()" class="text-sm font-medium text-gray-600 hover:text-gray-900 px-3 py-1.5 rounded-lg border border-gray-200">重新整理</button>
+                <button id="admin-trigger-btn" onclick="openAdminLoginModal()" class="text-sm font-medium bg-gray-900 text-white px-4 py-1.5 rounded-lg hover:bg-gray-800 transition">管理者登入</button>
+            </div>
         </div>
-        <span class="badge">ISO 7010 ${sign.id}</span>
-        <h3>${sign.title}</h3>
-        <div class="en-title">${sign.enTitle}</div>
-        <p class="desc">${sign.desc}</p>
-      `;
+    </header>
 
-      grid.appendChild(card);
-    });
-  </script>
+    <!-- 主要內容容器 -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
+        <!-- 載入中動畫 -->
+        <div id="loading" class="flex flex-col items-center justify-center py-20">
+            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-gray-900"></div>
+            <p class="mt-4 text-sm text-gray-500">正在同步最新資料...</p>
+        </div>
+
+        <div id="app-view" class="hidden"></div>
+    </main>
+
+    <!-- 管理員登入 Modal -->
+    <div id="admin-login-modal" class="fixed inset-0 bg-black bg-z-50 bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
+            <h3 class="text-lg font-semibold mb-4">管理者控制中心登入</h3>
+            <input type="password" id="admin-password-input" placeholder="請輸入管理員密碼" class="w-full border border-gray-300 rounded-lg px-4 py-2 mb-4 focus:outline-none focus:border-gray-900">
+            <div class="flex justify-end space-x-2">
+                <button onclick="closeAdminLoginModal()" class="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg">取消</button>
+                <button onclick="submitAdminLogin()" class="px-4 py-2 text-sm bg-gray-900 text-white rounded-lg hover:bg-gray-800">登入</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 管理員控制中心面板 Modal -->
+    <div id="admin-control-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-2xl shadow-xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">管理者控制中心</h3>
+                <button onclick="closeAdminControlModal()" class="text-gray-400 hover:text-gray-600">✕</button>
+            </div>
+            
+            <div class="space-y-6">
+                <!-- 更改密碼區塊 -->
+                <div class="border-b pb-4">
+                    <h4 class="text-sm font-medium text-gray-700 mb-2">修改管理員密碼</h4>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="password" id="old-pwd" placeholder="舊密碼" class="border rounded-lg px-3 py-2 text-sm">
+                        <input type="password" id="new-pwd" placeholder="新密碼" class="border rounded-lg px-3 py-2 text-sm">
+                    </div>
+                    <button onclick="changePassword()" class="mt-2 bg-gray-900 text-white text-sm px-4 py-1.5 rounded-lg">確認修改密碼</button>
+                </div>
+
+                <!-- 待審批清單區塊 -->
+                <div>
+                    <h4 class="text-sm font-medium text-gray-700 mb-2">待審批清單</h4>
+                    <div id="approval-list-container" class="space-y-3">
+                        <!-- 動態帶入 -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 flex justify-end">
+                <button onclick="closeAdminControlModal()" class="px-4 py-2 text-sm bg-gray-100 text-gray-700 rounded-lg">關閉</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新增號誌 Modal (管理員限定) -->
+    <div id="add-container-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-lg shadow-xl max-h-[90vh] overflow-y-auto">
+            <h3 class="text-lg font-semibold mb-4">新增號誌與容器</h3>
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1">容器編號 (ID)</label>
+                    <input type="text" id="new-cid" placeholder="例如: CNT_005" class="w-full border rounded-lg px-3 py-2 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1">所屬分類</label>
+                    <select id="new-ccat" class="w-full border rounded-lg px-3 py-2 text-sm">
+                        <option value="CAT_01">Warning sign</option>
+                        <option value="CAT_02">Mandatory sign</option>
+                        <option value="CAT_03">Prohibition sign</option>
+                        <option value="CAT_04">Safe condition sign</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1">容器名稱</label>
+                    <input type="text" id="new-cname" placeholder="容器名稱" class="w-full border rounded-lg px-3 py-2 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1">圖示網址 (Image URL)</label>
+                    <input type="text" id="new-cimg" placeholder="https://lh3.googleusercontent.com/d/..." class="w-full border rounded-lg px-3 py-2 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-600 mb-1">標誌說明</label>
+                    <textarea id="new-cdesc" placeholder="說明文字..." class="w-full border rounded-lg px-3 py-2 text-sm"></textarea>
+                </div>
+
+                <!-- 若為 Warning sign 額外顯示 5 大危害 -->
+                <div id="warning-fields" class="border-t pt-3 space-y-2">
+                    <p class="text-xs font-semibold text-red-600">⚠️ 此分類為 Warning sign，可預先填寫 5 大危害控制措施（可留空白）</p>
+                    <input type="text" id="h-elimination" placeholder="消除 (Elimination)" class="w-full border rounded-lg px-3 py-2 text-xs">
+                    <input type="text" id="h-substitution" placeholder="取代 (Substitution)" class="w-full border rounded-lg px-3 py-2 text-xs">
+                    <input type="text" id="h-engineering" placeholder="工程控制 (Engineering controls)" class="w-full border rounded-lg px-3 py-2 text-xs">
+                    <input type="text" id="h-admin" placeholder="行政管理 (Administrative controls)" class="w-full border rounded-lg px-3 py-2 text-xs">
+                    <input type="text" id="h-ppe" placeholder="個人防護具 (PPE)" class="w-full border rounded-lg px-3 py-2 text-xs">
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end space-x-2">
+                <button onclick="closeAddModal()" class="px-4 py-2 text-sm text-gray-600">取消</button>
+                <button onclick="submitNewContainer()" class="px-4 py-2 text-sm bg-gray-900 text-white rounded-lg">確認新增</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript 核心邏輯 -->
+    <script>
+        // ⚠️ 請替換為你部署好的 Google Apps Script Web App 網址
+        const GAS_API_URL = "https://script.google.com/macros/s/AKfycbzJ1NShDRiL1wG2yYvLL4Jf7cHi7qAniHX8qCAUGn3YZ-7cbGUtZiarWvB6381yH1po/exec";
+
+        let globalData = {
+            categories: [],
+            containers: [],
+            hazards: [],
+            approvals: [],
+            pendingCount: 0
+        };
+
+        let isAdminLoggedIn = false;
+
+        // 初始化載入
+        window.addEventListener("DOMContentLoaded", () => {
+            fetchDataAndInit();
+            window.addEventListener("hashchange", handleRouting);
+        });
+
+        async function fetchDataAndInit() {
+            try {
+                const res = await fetch(`${GAS_API_URL}?action=getData`);
+                const data = await res.json();
+                globalData = data;
+                
+                // 更新頂部待審批數量
+                updatePendingBadge(globalData.pendingCount);
+                
+                // 路由解析
+                handleRouting();
+                
+                document.getElementById("loading").classList.add("hidden");
+                document.getElementById("app-view").classList.remove("hidden");
+            } catch (err) {
+                console.error("資料載入失敗", err);
+                document.getElementById("loading").innerHTML = '<p class="text-red-500">無法連線至雲端資料庫，請檢查 GAS 網址設定。</p>';
+            }
+        }
+
+        function updatePendingBadge(count) {
+            const badge = document.getElementById("pending-badge");
+            if (count > 0) {
+                badge.innerText = count;
+                badge.classList.remove("hidden");
+            } else {
+                badge.classList.add("hidden");
+            }
+        }
+
+        // 路由控制
+        function handleRouting() {
+            const hash = window.location.hash;
+            const appView = document.getElementById("app-view");
+            const backBtn = document.getElementById("back-btn");
+
+            if (!hash || hash === "#" || hash === "#/") {
+                backBtn.classList.add("hidden");
+                renderLayer1();
+            } else if (hash.startsWith("#/category/")) {
+                backBtn.classList.remove("hidden");
+                const catId = hash.split("/")[2];
+                renderLayer2(catId);
+            } else if (hash.startsWith("#/detail/")) {
+                backBtn.classList.remove("hidden");
+                const containerId = hash.split("/")[2];
+                renderLayer3(containerId);
+            }
+        }
+
+        function navigateHome() {
+            window.location.hash = "#/";
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        // 第一層：顯示四大分類
+        function renderLayer1() {
+            let html = `
+                <div class="space-y-6">
+                    <!-- 控制列：搜尋與管理功能 -->
+                    <div class="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-4 rounded-2xl border border-gray-200">
+                        <div class="w-full md:w-96 relative">
+                            <input type="text" id="search-input" oninput="handleSearchDebounced(this.value)" placeholder="搜尋容器關鍵字..." class="w-full border border-gray-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:border-gray-900">
+                        </div>
+                        <div class="flex items-center space-x-2 w-full md:w-auto justify-end">
+                            ${isAdminLoggedIn ? `
+                                <button onclick="openAddModal()" class="bg-gray-900 text-white text-sm px-4 py-2 rounded-xl hover:bg-gray-800">＋ 新增號誌</button>
+                                <button onclick="openAdminControlModal()" class="bg-indigo-600 text-white text-sm px-4 py-2 rounded-xl">控制中心 (${globalData.pendingCount})</button>
+                            ` : ''}
+                            <button onclick="exportPDF('all')" class="border border-gray-300 text-gray-700 text-sm px-4 py-2 rounded-xl hover:bg-gray-50">匯出所有標誌 PDF</button>
+                        </div>
+                    </div>
+
+                    <!-- 搜尋結果容器 (預設隱藏) -->
+                    <div id="search-results-area" class="hidden">
+                        <div class="flex justify-between items-center mb-3">
+                            <h2 class="text-lg font-semibold">搜尋結果</h2>
+                            <button onclick="exportPDF('search')" class="text-xs border px-3 py-1.5 rounded-lg">匯出搜尋結果 PDF</button>
+                        </div>
+                        <div id="search-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+                    </div>
+
+                    <!-- 四大分類網格 -->
+                    <div id="categories-grid-area">
+                        <h2 class="text-lg font-semibold mb-4">四大標誌分類</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            `;
+
+            globalData.categories.forEach(cat => {
+                // 找出該分類的第一個容器作為代表圖示
+                const firstContainer = globalData.containers.find(c => c.categoryId === cat.categoryId);
+                const imgUrl = firstContainer ? firstContainer.imageUrl : 'https://via.placeholder.com/150';
+                const containerName = firstContainer ? firstContainer.containerName : '尚無容器';
+
+                html += `
+                    <div onclick="window.location.hash='#/category/${cat.categoryId}'" class="bg-white p-5 rounded-2xl border border-gray-200 hover:shadow-md transition cursor-pointer flex flex-col items-center text-center">
+                        <div class="w-24 h-24 mb-3 flex items-center justify-center bg-gray-50 rounded-xl overflow-hidden">
+                            <img src="${imgUrl}" alt="${cat.categoryName}" class="max-h-full max-w-full object-contain">
+                        </div>
+                        <h3 class="font-semibold text-gray-900 text-base">${cat.categoryName}</h3>
+                        <p class="text-xs text-gray-500 mt-1">代表: ${containerName}</p>
+                    </div>
+                `;
+            });
+
+            html += `</div></div></div>`;
+            document.getElementById("app-view").innerHTML = html;
+        }
+
+        // 防抖搜尋 (300ms)
+        let searchTimer;
+        function handleSearchDebounced(keyword) {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => {
+                executeSearch(keyword.trim());
+            }, 300);
+        }
+
+        function executeSearch(keyword) {
+            const searchArea = document.getElementById("search-results-area");
+            const catArea = document.getElementById("categories-grid-area");
+            const grid = document.getElementById("search-grid");
+
+            if (!keyword) {
+                searchArea.classList.add("hidden");
+                catArea.classList.remove("hidden");
+                return;
+            }
+
+            catArea.classList.add("hidden");
+            searchArea.classList.remove("hidden");
+
+            const filtered = globalData.containers.filter(c => 
+                c.containerName.toLowerCase().includes(keyword.toLowerCase()) || 
+                c.containerId.toLowerCase().includes(keyword.toLowerCase()) ||
+                c.description.toLowerCase().includes(keyword.toLowerCase())
+            );
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<p class="text-sm text-gray-500 col-span-full py-6 text-center">找不到符合關鍵字的容器</p>`;
+                return;
+            }
+
+            let html = "";
+            filtered.forEach(c => {
+                html += `
+                    <div onclick="window.location.hash='#/detail/${c.containerId}'" class="bg-white p-4 rounded-xl border border-gray-200 hover:shadow-sm cursor-pointer flex items-center space-x-4">
+                        <img src="${c.imageUrl}" class="w-16 h-16 object-contain bg-gray-50 rounded-lg">
+                        <div>
+                            <h4 class="font-semibold text-sm">${c.containerName}</h4>
+                            <p class="text-xs text-gray-500">${c.containerId}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+        }
+
+        // 第二層：顯示該分類的所有容器
+        function renderLayer2(catId) {
+            const cat = globalData.categories.find(c => c.categoryId === catId);
+            const containers = globalData.containers.filter(c => c.categoryId === catId);
+
+            let html = `
+                <div class="space-y-6">
+                    <h2 class="text-xl font-bold text-gray-900">${cat ? cat.categoryName : '分類檢視'}</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            `;
+
+            containers.forEach(c => {
+                html += `
+                    <div onclick="window.location.hash='#/detail/${c.containerId}'" class="bg-white p-5 rounded-2xl border border-gray-200 hover:shadow-md transition cursor-pointer flex items-center space-x-4">
+                        <img src="${c.imageUrl}" class="w-20 h-20 object-contain bg-gray-50 rounded-xl p-2">
+                        <div>
+                            <h3 class="font-semibold text-gray-900">${c.containerName}</h3>
+                            <p class="text-xs text-gray-500 mt-1">編號: ${c.containerId}</p>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div></div>`;
+            document.getElementById("app-view").innerHTML = html;
+        }
+
+        // 第三層：容器詳細資訊 + QR Code + 5大危害控制措施
+        function renderLayer3(containerId) {
+            const container = globalData.containers.find(c => c.containerId === containerId);
+            if (!container) {
+                document.getElementById("app-view").innerHTML = `<p class="text-center py-20 text-gray-500">找不到此容器資料</p>`;
+                return;
+            }
+
+            const cat = globalData.categories.find(c => c.categoryId === container.categoryId);
+            const isWarning = cat && cat.categoryName === "Warning sign";
+            const hazard = globalData.hazards.find(h => h.containerId === containerId) || {};
+
+            let html = `
+                <div class="max-w-4xl mx-auto space-y-6 bg-white p-8 rounded-2xl border border-gray-200">
+                    <!-- 圖示與 QR Code 左右並排 -->
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-6 border-b pb-6">
+                        <div class="flex items-center space-x-6">
+                            <img src="${container.imageUrl}" class="w-32 h-32 object-contain bg-gray-50 rounded-xl p-2 border">
+                            <div>
+                                <span class="text-xs font-semibold px-2.5 py-1 bg-gray-100 rounded-full text-gray-600">${cat ? cat.categoryName : ''}</span>
+                                <h2 class="text-2xl font-bold mt-2">${container.containerName}</h2>
+                                <p class="text-sm text-gray-500 mt-1">${container.description}</p>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <div id="qrcode-box" class="bg-white p-2 border rounded-xl"></div>
+                            <span class="text-xs text-gray-400 mt-1">掃描直接連結此容器</span>
+                        </div>
+                    </div>
+            `;
+
+            // 若為 Warning sign 則顯示 5 大危害控制措施
+            if (isWarning) {
+                const hazardTitles = [
+                    { key: 'hazard1', label: '消除 (Elimination)' },
+                    { key: 'hazard2', label: '取代 (Substitution)' },
+                    { key: 'hazard3', label: '工程控制 (Engineering controls)' },
+                    { key: 'hazard4', label: '行政管理 (Administrative controls)' },
+                    { key: 'hazard5', label: '個人防護具 (PPE)' }
+                ];
+
+                html += `<div class="space-y-4"><h3 class="font-semibold text-lg">5 大危害控制措施</h3><div class="space-y-3">`;
+
+                hazardTitles.forEach((h, idx) => {
+                    const content = hazard[h.key] || '';
+                    html += `
+                        <div class="border rounded-xl p-4 flex items-center justify-between bg-gray-50">
+                            <div class="flex-1 pr-4">
+                                <span class="text-xs font-bold text-gray-500 block mb-1">${h.label}</span>
+                                <p class="text-sm text-gray-800">${content || '尚無資料'}</p>
+                            </div>
+                            <div>
+                                ${isAdminLoggedIn ? `
+                                    <button onclick="editHazardPrompt('${containerId}', ${idx + 1}, '${content}')" class="text-xs bg-gray-900 text-white px-3 py-1.5 rounded-lg">編輯</button>
+                                ` : `
+                                    <button onclick="requestApprovalPrompt('${containerId}', ${idx + 1})" class="text-xs border border-gray-300 bg-white text-gray-700 px-3 py-1.5 rounded-lg hover:bg-gray-100">新增</button>
+                                `}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `</div></div>`;
+            }
+
+            html += `</div>`;
+            document.getElementById("app-view").innerHTML = html;
+
+            // 動態產生 QR Code
+            const currentUrl = window.location.href;
+            new QRCode(document.getElementById("qrcode-box"), {
+                text: currentUrl,
+                width: 100,
+                height: 100,
+            });
+        }
+
+        // 管理員直接編輯 5 大危害
+        function editHazardPrompt(containerId, hazardIndex, currentContent) {
+            const newContent = prompt("請直接編輯該項危害控制措施內容:", currentContent);
+            if (newContent === null) return;
+
+            fetch(GAS_API_URL, {
+                method: "POST",
+                body: JSON.stringify({
+                    action: "editHazard",
+                    containerId: containerId,
+                    hazardIndex: hazardIndex,
+                    content: newContent
+                })
+            }).then(res => res.json()).then(result => {
+                if (result.status === "success") {
+                    alert("更新成功！");
+                    fetchDataAndInit();
+                } else {
+                    alert("更新失敗: " + result.message);
+                }
+            });
+        }
+
+        // 一般使用者送出審批請求
+        function requestApprovalPrompt(containerId, hazardIndex) {
+            const suggested = prompt("請輸入您想要新增的危害控制資訊:");
+            if (!suggested) return;
+
+            fetch(GAS_API_URL, {
+                method: "POST",
+                body: JSON.stringify({
+                    action: "requestApproval",
+                    containerId: containerId,
+                    hazardIndex: hazardIndex,
+                    suggestedContent: suggested
+                })
+            }).then(res => res.json()).then(result => {
+                if (result.status === "success") {
+                    alert("已成功送出審批申請，待管理員核准後將自動顯示。");
+                } else {
+                    alert("送出失敗: " + result.message);
+                }
+            });
+        }
+
+        // 管理員登入控制
+        function openAdminLoginModal() { document.getElementById("admin-login-modal").classList.remove("hidden"); }
+        function closeAdminLoginModal() { document.getElementById("admin-login-modal").classList.add("hidden"); }
+        
+        function submitAdminLogin() {
+            const pwd = document.getElementById("admin-password-input").value;
+            fetch(GAS_API_URL, {
+                method: "POST",
+                body: JSON.stringify({ action: "login", password: pwd })
+            }).then(res => res.json()).then(result => {
+                if (result.status === "success") {
+                    isAdminLoggedIn = true;
+                    closeAdminLoginModal();
+                    alert("管理員登入成功！");
+                    fetchDataAndInit();
+                } else {
+                    alert("密碼錯誤");
+                }
+            });
+        }
+
+        function openAdminControlModal() {
+            renderApprovalList();
+            document.getElementById("admin-control-modal").classList.remove("hidden");
+        }
+        function closeAdminControlModal() { document.getElementById("admin-control-modal").classList.add("hidden"); }
+
+        function renderApprovalList() {
+            const container = document.getElementById("approval-list-container");
+            const pendingItems = globalData.approvals.filter(a => a.status === "pending");
+
+            if (pendingItems.length === 0) {目前沒有待審批項目
+                container.innerHTML = `<p class="text-sm text-gray-400">目前沒有待審批的項目。</p>`;
+                return;
+            }
+
+            let html = "";
+            pendingItems.forEach(item => {
+                html += `
+                    <div class="border rounded-xl p-3 flex items-center justify-between bg-gray-50">
+                        <div>
+                            <span class="text-xs text-gray-500 block">容器: ${item.containerId} | 第 ${item.hazardIndex} 項措施</span>
+                            <p class="text-sm font-medium mt-1">建議內容: ${item.suggestedContent}</p>
+                        </div>
+                        <div class="space-x-2">
+                            <button onclick="processApproval('${item.approvalId}', 'approved')" class="text-xs bg-green-600 text-white px-3 py-1.5 rounded-lg">核准</button>
+                            <button onclick="processApproval('${item.approvalId}', 'rejected')" class="text-xs bg-red-600 text-white px-3 py-1.5 rounded-lg">拒絕</button>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function processApproval(approvalId, decision) {
+            fetch(GAS_API_URL, {
+                method: "POST",
+                body: JSON.stringify({
+                    action: "processApproval",
+                    approvalId: approvalId,
+                    decision: decision
+                })
+            }).then(res => res.json()).then(result => {
+                if (result.status === "success") {
+                    alert(decision === "approved" ? "已核准並串接至資料庫" : "已拒絕");
+                    fetchDataAndInit().then(() => renderApprovalList());
+                } else {
+                    alert("操作失敗");
+                }
+            });
+        }
+
+        function changePassword() {
+            const oldPwd = document.getElementById("old-pwd").value;
+            const newPwd = document.getElementById("new-pwd").value;
+            if (!oldPwd || !newPwd) {
+                alert("請填寫舊密碼與新密碼");
+                return;
+            }
+
+            fetch(GAS_API_URL, {
+                method: "POST",
+                body: JSON.stringify({
+                    action: "changePassword",
+                    oldPassword: oldPwd,
+                    newPassword: newPwd
+                })
+            }).then(res => res.json()).then(result => {
+                if (result.status === "success") {
+                    alert(result.message);
+                    closeAdminControlModal();
+                } else {
+                    alert("更改失敗: " + result.message);
+                }
+            });
+        }
+
+        // 新增號誌相關
+        function openAddModal() { document.getElementById("add-container-modal").classList.remove("hidden"); }
+        function closeAddModal() { document.getElementById("add-container-modal").classList.add("hidden"); }
+
+        function submitNewContainer() {
+            const cid = document.getElementById("new-cid").value;
+            const ccat = document.getElementById("new-ccat").value;
+            const cname = document.getElementById("new-cname").value;
+            const cimg = document.getElementById("new-cimg").value;
+            const cdesc = document.getElementById("new-cdesc").value;
+
+            if (!cid || !cname || !cimg) {
+                alert("請填寫必要的容器編號、名稱與圖片網址");
+                return;
+            }
+
+            const payload = {
+                action: "addContainer",
+                containerId: cid,
+                categoryId: ccat,
+                containerName: cname,
+                imageUrl: cimg,
+                description: cdesc,
+                isWarning: ccat === "CAT_01",
+                h1: document.getElementById("h-elimination").value,
+                h2: document.getElementById("h-substitution").value,
+                h3: document.getElementById("h-engineering").value,
+                h4: document.getElementById("h-admin").value,
+                h5: document.getElementById("h-ppe").value
+            };
+
+            fetch(GAS_API_URL, {
+                method: "POST",
+                body: JSON.stringify(payload)
+            }).then(res => res.json()).then(result => {
+                if (result.status === "success") {
+                    alert("新增號誌成功！");
+                    closeAddModal();
+                    fetchDataAndInit();
+                } else {
+                    alert("新增失敗");
+                }
+            });
+        }
+
+        // 列印 PDF 導出功能
+        function exportPDF(type) {
+            window.print();
+        }
+    </script>
 </body>
 </html>
